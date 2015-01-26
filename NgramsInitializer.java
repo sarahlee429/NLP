@@ -3,6 +3,8 @@ import java.util.List;
 
 public class NgramsInitializer {
 	static final String WORD_MARKER = "#";
+	static final boolean goodTuring = false;
+	static final boolean addOne = true;
 	Tokenizer t;
 
 	public NgramsInitializer(){
@@ -35,7 +37,8 @@ public class NgramsInitializer {
 	public static void main(String args[]){
 		NgramsInitializer i = new NgramsInitializer();
 		Unigrams u = i.makeUnigrams();
-		u.generateTuringMap();
-		u.printTuringMap();
+		//u.generateTuringMap();
+		//u.printTuringMap();
+		((Ngrams)u).print("");
 	}
 }

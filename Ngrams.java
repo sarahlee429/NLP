@@ -15,12 +15,16 @@ public class Ngrams {
 	public void generateTuringMap(){
 		t.getCounts(turingMap);
 	}
-	
+
 	public void printTuringMap(){
 		for(Integer i: turingMap.keySet()){
 			System.out.println("Key: " + i);
 			System.out.println("Value: " + turingMap.get(i));
 		}
+	}
+	
+	public void print(String filename){
+		t.print("/Users/Sarah/Desktop/trie.txt");
 	}
 
 }

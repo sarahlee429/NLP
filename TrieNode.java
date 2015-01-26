@@ -1,5 +1,8 @@
+import java.io.IOException;
+import java.io.Writer;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 public class TrieNode{
@@ -56,14 +59,16 @@ public class TrieNode{
 
 	public void insert(String s){
 		String [] toInsert = s.split(WORD_MARKER);
-
 		insertRec(toInsert, 0);
 	}
 
 	public void insertRec(String[] s, int index){
 		freq++;
-		if(index == s.length) return;
-		if(index == s.length - 1) isWord = true;
+		isWord = true;
+		if(index == s.length) {
+			isWord = true;
+				return;
+		}
 		TrieNode child = children.get(s[index]);
 		if(child == null){
 			children.put(s[index],new TrieNode(s[index]));
@@ -111,4 +116,31 @@ public class TrieNode{
 	public boolean contains(String query){
 		return !(get(query) == null);
 	}
+
+	public void print(){
+		if(isWord){
+			System.out.println("Key " + key);
+			System.out.println("Freq " + freq);
+		}
+		if(children!=null){
+			Iterator<String> iterator = children.keySet().iterator();
+			while(iterator.hasNext()) {
+				TrieNode child = children.get(iterator.next());
+				child.print();
+			}
+		} 
+	}
+	
+	 public void print(Writer out, String gen) throws IOException{
+         if(children!=null){
+                 Iterator<String> iterator = children.keySet().iterator();
+                 while(iterator.hasNext()) {//Node eachChild:children_){
+                         TrieNode child = children.get(iterator.next());
+                         child.print( out, gen + key + " ");
+                 }
+         } 
+         if(isWord == true) {
+                 out.write(gen + key + " " + Long.toString(freq)+"\n");
+         }
+ }
 }
