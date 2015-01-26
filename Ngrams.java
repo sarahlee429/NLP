@@ -23,8 +23,20 @@ public class Ngrams {
 		}
 	}
 	
+	public String generateSentence(){
+        StringBuilder sentence = new StringBuilder();
+        String s1 = "";
+        while(!s1.contains(".") && sentence.length() <= 150){
+        	String w = t.generateWord(s1);
+        	sentence.append(w);
+        	sentence.append(" ");
+        	s1 = w;
+        }
+        return sentence.toString();
+    }
+	
 	public void print(String filename){
-		t.print("/Users/Sarah/Desktop/trie.txt");
+		t.print(filename);
 	}
 
 }

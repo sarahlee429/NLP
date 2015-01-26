@@ -8,7 +8,7 @@ import java.util.Scanner;
 import javax.swing.JFileChooser;
 public class Tokenizer {
 	public ArrayList<String> tokens;
-	private static final String regexSeparator = "([\\?!().,\";:/\\|`])";  
+	private static final String regexSeparator = "([\\?!(),\";:/\\|`])";  
 	private static final String regexClitics = "(:|-|'S|'D|'M|'LL|'RE|'VE|N'T|'s|'d|'m|'ll|'re|'ve|n't)";
 	private static final String regexTags = "<[^>]*>";
 	private static final String regexNum = "[0-9]";
@@ -63,11 +63,11 @@ public class Tokenizer {
 			this.tokens.addAll(scanList);
 		}
 	}
-	public static void main(String args []){
+	/**public static void main(String args []){
 		Tokenizer t = new Tokenizer();
 		t.Tokenize();
 		t.printTokens();
-	}
+	}**/
 
 	public void printTokens() {
 		System.out.println(tokens);  

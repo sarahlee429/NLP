@@ -6,6 +6,7 @@ import java.io.FileWriter;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Random;
 
 public class Trie {
 	TrieNode root;
@@ -44,9 +45,22 @@ public class Trie {
 		if(t != null) return t.getFreq();
 		return 0;
 	}
+	
 	public void getCounts(Map<Integer, Integer> map){
 		root.getCounts(map);
 	}
+	 
+	public String generateWord(String predecessor) {
+         String ret = "";
+         TrieNode currNode = get(predecessor);
+         if(currNode == null) {
+        	 currNode = root;
+         }
+         Random rand = new Random();
+         int randomInt = rand.nextInt((int)currNode.getFreq());
+         ret = currNode.randomWalk(randomInt + 1);
+         return ret;
+ }
 
 	public void print(String filename){
 		File file = new File(filename);
@@ -62,10 +76,16 @@ public class Trie {
 	
 	/*public static void main(String args []){
 		Trie t = new Trie();
-		t.insert("pika#chu");
-		t.insert("pika#pi");
-		t.insert("pika#pika");
+		t.insert("pika chu");
+		t.insert("pika pi");
+		t.insert("pika pika");
+		t.insert("pika pika");
+		t.insert("pika pika");
+		t.insert("pika pika");
+		t.insert("pika pika");
+		t.insert("pika pikaaaaa");
 		System.out.println(t.stringFreq("pika"));
-		System.out.println(t.stringFreq("pika#chu"));
+		System.out.println(t.stringFreq("pika chu"));
+		System.out.println(t.generateWord("pika"));
 	}*/
 }

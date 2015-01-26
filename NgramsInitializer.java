@@ -36,9 +36,10 @@ public class NgramsInitializer {
 	
 	public static void main(String args[]){
 		NgramsInitializer i = new NgramsInitializer();
-		Unigrams u = i.makeUnigrams();
+		Bigrams u = i.makeBigrams();
 		//u.generateTuringMap();
 		//u.printTuringMap();
-		((Ngrams)u).print("");
+		((Ngrams)u).print("/Users/Sarah/Desktop/trie.txt");
+		System.out.println(((Ngrams)u).generateSentence());
 	}
 }

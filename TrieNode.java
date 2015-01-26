@@ -6,22 +6,19 @@ import java.util.Iterator;
 import java.util.Map;
 
 public class TrieNode{
-	static final int ALPHABET_SIZE = 26;
-	static final String WORD_MARKER = "#";
-	private boolean isLeaf;
-	private boolean isWord;
-	private String key;
-	private Map<String,TrieNode> children;
-	private int freq;
+	static final String WORD_MARKER = " "; //used to mark the end of a word
+	private boolean isWord; //marks the end of a word
+	private String key; //the string associated with the node
+	private Map<String,TrieNode> children; //contains this node's children with their associated string
+	private int freq; //number of times the key occurs in the corpus
 
 	public TrieNode(String toInsert){
 		key = toInsert;
-		isLeaf = false;
 		isWord = false;
 		children = new HashMap<String,TrieNode>();
 		freq = 0;
 	}
-
+    //getters and setters for TrieNode fields
 	public int getFreq(){
 		return freq;
 	}
@@ -40,15 +37,7 @@ public class TrieNode{
 	public Collection<?> getChildren(){
 		return children.values();
 	}
-
-	public boolean isLeaf(){
-		return isLeaf;
-	}
-
-	public void setIsLeaf(boolean leaf){
-		this.isLeaf = leaf;
-	}
-
+	
 	public void setIsWord(boolean word){
 		this.isWord = word;
 	}
@@ -67,7 +56,7 @@ public class TrieNode{
 		isWord = true;
 		if(index == s.length) {
 			isWord = true;
-				return;
+			return;
 		}
 		TrieNode child = children.get(s[index]);
 		if(child == null){
@@ -130,17 +119,31 @@ public class TrieNode{
 			}
 		} 
 	}
-	
-	 public void print(Writer out, String gen) throws IOException{
-         if(children!=null){
-                 Iterator<String> iterator = children.keySet().iterator();
-                 while(iterator.hasNext()) {//Node eachChild:children_){
-                         TrieNode child = children.get(iterator.next());
-                         child.print( out, gen + key + " ");
-                 }
-         } 
-         if(isWord == true) {
-                 out.write(gen + key + " " + Long.toString(freq)+"\n");
-         }
- }
+
+	public String randomWalk(int r){
+		int curr = 0;
+		if(children == null) return null;
+		Iterator<String> it = children.keySet().iterator();
+		while(it.hasNext()){
+			TrieNode t= children.get(it.next());
+			curr = curr + t.getFreq();
+			if(curr >= r){
+				return t.getKey();
+			}
+		}
+		return null;
+	}
+
+	public void print(Writer out, String gen) throws IOException{
+		if(children!=null){
+			Iterator<String> iterator = children.keySet().iterator();
+			while(iterator.hasNext()) {//Node eachChild:children_){
+				TrieNode child = children.get(iterator.next());
+				child.print( out, gen + key + " ");
+			}
+		} 
+		if(isWord == true) {
+			out.write(gen + key + " " + Long.toString(freq)+"\n");
+		}
+	}
 }
