@@ -63,11 +63,6 @@ public class Tokenizer {
 			this.tokens.addAll(scanList);
 		}
 	}
-	/**public static void main(String args []){
-		Tokenizer t = new Tokenizer();
-		t.Tokenize();
-		t.printTokens();
-	}**/
 
 	public void printTokens() {
 		System.out.println(tokens);  

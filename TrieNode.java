@@ -6,7 +6,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 public class TrieNode{
-	static final String WORD_MARKER = " "; //used to mark the end of a word
+	static final String WORD_MARKER = "#"; //used to mark the end of a word
 	private boolean isWord; //marks the end of a word
 	private String key; //the string associated with the node
 	private Map<String,TrieNode> children; //contains this node's children with their associated string
@@ -18,32 +18,38 @@ public class TrieNode{
 		children = new HashMap<String,TrieNode>();
 		freq = 0;
 	}
+	
     //getters and setters for TrieNode fields
-	public int getFreq(){
-		return freq;
-	}
-
 	public String getKey(){
 		return key;
 	}
 
-	public void setFreq(int s){
-		freq = s;
-	}
-	public void incFreq(){
-		freq ++;
-	}
-
-	public Collection<?> getChildren(){
-		return children.values();
+	public boolean isWord(){
+		return isWord;
 	}
 	
 	public void setIsWord(boolean word){
 		this.isWord = word;
 	}
+	
+	public int getFreq(){
+		return freq;
+	}
 
-	public boolean isWord(){
-		return isWord;
+	public void setFreq(int s){
+		freq = s;
+	}
+	
+	public void incFreq(){
+		freq ++;
+	}
+
+	public Collection<TrieNode> getChildren(){
+		return children.values();
+	}
+	
+	public int getNumChildren(){
+		return children.values().size();
 	}
 
 	public void insert(String s){
@@ -79,7 +85,7 @@ public class TrieNode{
 	}
 
 	public void getCounts(Map<Integer,Integer> map){
-		if(key.equals("")){} else{
+		if(!key.equals("")){
 			if(map.containsKey(getFreq())){
 				Integer val = map.get(getFreq());
 				map.put(getFreq(), val + 1);
@@ -94,9 +100,7 @@ public class TrieNode{
 
 	public void traverse(){
 		System.out.println(key);
-		if(children == null){
-			return;
-		}
+		if(children == null) return;
 		for(TrieNode n: children.values()){
 			n.traverse();
 		}
@@ -142,8 +146,6 @@ public class TrieNode{
 				child.print( out, gen + key + " ");
 			}
 		} 
-		if(isWord == true) {
-			out.write(gen + key + " " + Long.toString(freq)+"\n");
-		}
+		if(isWord) out.write(gen + key + " " + Long.toString(freq)+"\n");
 	}
 }

@@ -11,35 +11,27 @@ public class NgramsInitializer {
 		t = new Tokenizer();
 		t.Tokenize();
 	}
-
-	public Unigrams makeUnigrams(){
-		List<String> tokens = t.tokens;
-		Trie t = new Trie();
-		for(int i = 0; i < tokens.size(); i++){
-			t.insert(tokens.get(i));
-		}
-		Unigrams u = new Unigrams(t);
-		return u;
-	}
 	
-	public Bigrams makeBigrams(){
-		List<String> bigrams = new ArrayList<String>();
+	public Ngrams makeNgrams(int n){
+		List<String> ngrams = new ArrayList<String>();
 		List<String> tokens = t.tokens;
 		Trie t = new Trie();
-		for(int i = 0; i < tokens.size() - 1; i++){
-			bigrams.add(tokens.get(i) + WORD_MARKER + tokens.get(i + 1));
+		for(int i = 0; i < tokens.size() - n - 1; i++){
+			ngrams.add(tokens.get(i) + WORD_MARKER + tokens.get(i + 1) + WORD_MARKER + tokens.get(i + 2));
 		}
-		t.insertAll(bigrams);
-		Bigrams b = new Bigrams(t);
+		t.insertAll(ngrams);
+		Ngrams b = new Ngrams(t,n);
+		//System.out.println(trigrams.toString());
 		return b;
 	}
 	
 	public static void main(String args[]){
 		NgramsInitializer i = new NgramsInitializer();
-		Bigrams u = i.makeBigrams();
-		//u.generateTuringMap();
-		//u.printTuringMap();
+		Ngrams u = i.makeNgrams(3);
+		u.generateTuringMap();
+		u.printTuringMap();
 		((Ngrams)u).print("/Users/Sarah/Desktop/trie.txt");
 		System.out.println(((Ngrams)u).generateSentence());
+		System.out.println(((Ngrams)u).unsmoothedProbability("reward"));
 	}
 }
