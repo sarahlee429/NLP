@@ -5,11 +5,16 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+/**
+ * Purpose: TrieNode class to maintain keys and frequencies
+ * @author Sarah Lee
+ */
+
 public class TrieNode{
-	static final String WORD_MARKER = "#"; //used to mark the end of a word
+	private static final String WORD_MARKER = "#"; //used to mark the end of a word
 	private boolean isWord; //marks the end of a word
 	private String key; //the string associated with the node
-	private Map<String,TrieNode> children; //contains this node's children with their associated string
+	private Map<String,TrieNode> children; //node's children with string as key
 	private int freq; //number of times the key occurs in the corpus
 
 	public TrieNode(String toInsert){
@@ -43,7 +48,7 @@ public class TrieNode{
 	public void incFreq(){
 		freq ++;
 	}
-
+	
 	public Collection<TrieNode> getChildren(){
 		return children.values();
 	}
@@ -52,19 +57,28 @@ public class TrieNode{
 		return children.values().size();
 	}
 
+	/**
+	 * Inserts a string as words separated by designated marker 
+	 * @param string s to add to trie
+	 * @return none
+	 */
 	public void insert(String s){
 		String [] toInsert = s.split(WORD_MARKER);
 		insertRec(toInsert, 0);
 	}
 
+	//Recursive helper method for insert
 	public void insertRec(String[] s, int index){
 		freq++;
-		isWord = true;
+		//Base Case: We have inserted all of the words in s
 		if(index == s.length) {
 			isWord = true;
 			return;
 		}
 		TrieNode child = children.get(s[index]);
+		//Recursive Case:
+		//1) If a child matches, recurse on that child
+		//2) Otherwise make a new node for the string then recurse
 		if(child == null){
 			children.put(s[index],new TrieNode(s[index]));
 			children.get(s[index]).insertRec(s, index + 1);
@@ -72,7 +86,21 @@ public class TrieNode{
 			child.insertRec(s, index + 1);
 		}
 	}
-
+	
+	/**
+	 * Searches if s is contained in this node or descendants
+	 * @param string s to locate in trie
+	 * @return true found or false if none found
+	 */
+	public boolean contains(String query){
+		return !(get(query) == null);
+	}
+	
+	/**
+	 * Finds the child that contains s
+	 * @param string s to locate in trie
+	 * @return TrieNode containing the string
+	 */
 	public TrieNode get(String s){
 		TrieNode current = this;
 		String [] toFind = s.split(WORD_MARKER);
@@ -84,20 +112,33 @@ public class TrieNode{
 		return current;
 	}
 
-	public void getCounts(Map<Integer,Integer> map){
+	/**
+	 * Updates/inserts this node to given map
+	 * @param a map passed by ref to update
+	 * @return none
+	 */
+	public void getTuringCounts(Map<Integer,Integer> map){
 		if(!key.equals("")){
+			//map contains this node's freq as key
 			if(map.containsKey(getFreq())){
 				Integer val = map.get(getFreq());
+				//increment value for key
 				map.put(getFreq(), val + 1);
 			} else {
+				//otherwise insert with init value of 1
 				map.put(getFreq(), 1);
 			}
 		}
 		for(TrieNode n: children.values()){
-			n.getCounts(map);
+			n.getTuringCounts(map);
 		}
 	}
 
+	/**
+	 * Prints value of this node then recurse on all children
+	 * @param none
+	 * @return none
+	 */
 	public void traverse(){
 		System.out.println(key);
 		if(children == null) return;
@@ -105,47 +146,38 @@ public class TrieNode{
 			n.traverse();
 		}
 	}
-
-	public boolean contains(String query){
-		return !(get(query) == null);
-	}
-
-	public void print(){
-		if(isWord){
-			System.out.println("Key " + key);
-			System.out.println("Freq " + freq);
-		}
-		if(children!=null){
-			Iterator<String> iterator = children.keySet().iterator();
-			while(iterator.hasNext()) {
-				TrieNode child = children.get(iterator.next());
-				child.print();
-			}
-		} 
-	}
-
-	public String randomWalk(int r){
+	
+	/**
+	 * Picks a random child to return a string of its key
+	 * @param a random integer between 1 - this node's totalFreq
+	 * @return a string key of one of its children
+	 */
+	public String generateWord(int r){
 		int curr = 0;
 		if(children == null) return null;
 		Iterator<String> it = children.keySet().iterator();
 		while(it.hasNext()){
 			TrieNode t= children.get(it.next());
 			curr = curr + t.getFreq();
-			if(curr >= r){
-				return t.getKey();
-			}
+			if(curr >= r) return t.getKey();
 		}
 		return null;
 	}
 
-	public void print(Writer out, String gen) throws IOException{
+	/**
+	 * Picks a random child to return a string of its key
+	 * @param buffered writer
+	 * @param cumulative key of its parents if any
+	 * @return none
+	 */
+	public void print(Writer out, String keys) throws IOException{
 		if(children!=null){
-			Iterator<String> iterator = children.keySet().iterator();
-			while(iterator.hasNext()) {//Node eachChild:children_){
-				TrieNode child = children.get(iterator.next());
-				child.print( out, gen + key + " ");
+			Iterator<String> it = children.keySet().iterator();
+			while(it.hasNext()) {
+				TrieNode child = children.get(it.next());
+				child.print(out, keys + key + " ");
 			}
 		} 
-		if(isWord) out.write(gen + key + " " + Long.toString(freq)+"\n");
+		if(isWord) out.write(keys + key + " " + Integer.toString(freq)+"\n");
 	}
 }

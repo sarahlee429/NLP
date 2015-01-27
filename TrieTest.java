@@ -131,5 +131,6 @@ public class TrieTest {
 		TrieNode tn2 = complexT.get("Gallop#apace,#");
 		Collection<TrieNode> children2 = (Collection<TrieNode>) tn2.getChildren();
 		assertEquals(children2.size(), 4);
+		assertEquals(complexT.stringFreq(""),0);
 	}
 }

@@ -9,6 +9,11 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Random;
 
+/**
+ * Purpose: Trie interface that stores all
+ * the data for an ngram
+ * @author Sarah Lee
+ */
 public class Trie {
 	private TrieNode root; //root of the trie
 	private int totalFreq;  //represents the size of the corpus this trie holds
@@ -33,6 +38,11 @@ public class Trie {
 		totalFreq ++;
 	}
 
+	/**
+	 * Inserts a list of words 
+	 * @param string s to add to trie
+	 * @return TrieNode containing the string
+	 */
 	public void insertAll(Collection<String> toInsert){
 		Iterator<String> it = toInsert.iterator();
 		while(it.hasNext()){
@@ -41,7 +51,7 @@ public class Trie {
 			totalFreq++;
 		}
 	}
-	
+
 	public boolean isEmpty(){
 		System.out.println("total freq is " + totalFreq);
 		return (totalFreq == 0);
@@ -49,7 +59,7 @@ public class Trie {
 
 	/**
 	 * Finds the node in the trie containing 
-	 * input string s
+	 * @param string s to locate in trie
 	 * @return TrieNode containing the string
 	 */
 	public TrieNode get(String s){
@@ -60,27 +70,37 @@ public class Trie {
 		return root.contains(s);
 	}
 
+	/**
+	 * Pre-order trie traversal
+	 * @param none
+	 * @return none
+	 */
 	public void traverse(){
 		root.traverse();
 	}
 
+	/**
+	 * Calculates the total time a string occurs
+	 * @param string s to find the frequency for
+	 * @return int frequency of given string
+	 */
 	public int stringFreq(String s){
 		TrieNode t = get(s);
 		if(t != null) return t.getFreq();
 		return 0;
 	}
 	/**
-	 * Populates a good Turing map for the Trie
-	 * 
+	 * Populates a good Turing map for the trie
+	 * @param map to populate good turing counts
 	 * @return none
 	 */
-	public void getCounts(Map<Integer, Integer> map){
-		root.getCounts(map);
+	public void getTuringCounts(Map<Integer, Integer> map){
+		root.getTuringCounts(map);
 	}
 
 	/**
-	 * Given a preceding word, generates a random word
-	 * from its children. 
+	 * Given a preceding word, generates a random word from its children.
+	 * @param the parent or preceding string
 	 * @return string key value of child chosen
 	 */
 	public String generateWord(String predecessor) {
@@ -90,16 +110,15 @@ public class Trie {
 			currNode = root;
 		}
 		Random rand = new Random();
-		int randomInt = rand.nextInt((int)currNode.getFreq());
-		ret = currNode.randomWalk(randomInt + 1);
+		//Generates a random int from range 1 - totalFreq of predecessor
+		ret = currNode.generateWord(1 + rand.nextInt((int)currNode.getFreq()));
 		if(ret == null) return currNode.getKey();
 		return ret;
 	}
 
 	/**
-	 * Iteratively calculates number of nodes
-	 * in the Trie
-	 * @return total number of nodes in the Trie
+	 * Iteratively calculates number of nodes in the trie
+	 * @return total number of nodes in the trie
 	 */
 	public int getVocabularySize(){
 		int size = 0;
@@ -116,8 +135,8 @@ public class Trie {
 	}
 
 	/**
-	 * Prints to a specified file all the contents
-	 * in (word,word_count) format
+	 * Prints to a specified file all the contents in (word,word_count) format
+	 * @param the file path to print output
 	 * @return none
 	 */
 	public void print(String filename){
