@@ -9,16 +9,19 @@ import java.util.List;
 import java.util.Set;
 import org.junit.Test;
 
-
+/**
+ * TrieTest --- Test the correctness of Trie implementation
+ * @author Sarah Lee
+ */
 public class TrieTest {
-	private String testExcerpt = "Gallop#apace,#you#Gallop#apace,#her#Gallop#apace,#me#Gallop#apace,#him#Gallop#you#aspace";
+	private String testExcerpt = "Gallop#apace,#you#Gallop#apace,#her#Gallop#apace,#me#Gallop#apace,#him#Gallop#you#aspace#";
 	private String[] toInsert = testExcerpt.split("#");
-	List<String> trieSegments = new ArrayList<String>();
-
 	private Trie simpleT = new Trie();
 	private Trie complexT = new Trie();
-	
-	public void makeTrieSegments(){
+
+	//Helper function to split up text excerpt
+	public List<String> makeTrieSegments(){
+		List<String> trieSegments = new ArrayList<String>();
 		int curr = 2;
 		while(curr < toInsert.length){
 			StringBuilder sb = new StringBuilder();
@@ -26,25 +29,39 @@ public class TrieTest {
 			sb.append(toInsert[curr - 1]+ "#");
 			sb.append(toInsert[curr] + "#");
 			curr = curr + 1;
-			System.out.println(sb.toString());
 			trieSegments.add(sb.toString());
 		}
-		System.out.println(trieSegments.toString());
+		return trieSegments;
 	}
-	
+
+	//Helper function to find number of times string appears in excerpt
+	public int getCountInExcerpt(String s){
+		String [] seqArr = s.split("#");
+		int seq = seqArr.length, curr = 0, count = 0;
+		while(curr < toInsert.length - seq){
+			boolean found = true;
+			for(int  i = 0 ; i < seq ; i++){
+				if(!(toInsert[curr + i].equals(seqArr[i]))){
+					found = false;
+				}
+			}
+			if(found) count ++;
+			curr++;
+		}
+		return count;
+	}
+
 	@Test
 	public void SimpleTestEmpty() {
 		assertTrue(simpleT.isEmpty());
 		assertEquals(0,simpleT.getTotalFreq());
 		assertEquals(0,simpleT.getVocabularySize());
-		System.out.println("--------->" + getCountInExcerpt("Gallop#apace,"));
 	}
-	
+
 	/**
-	 * Test state of trie after insertions
-	 * Size of trie should be equal to corpus length
-	 * Size of vocab size should equal the number of distinct
-	 * words in the trie 
+	 * Test state of Trie after insertions. Size of Trie should be equal 
+	 * to corpus length Size of vocabulary should equal the number of distinct
+	 * words in the Trie 
 	 */
 	@Test
 	public void SimpleTestNonEmpty(){
@@ -54,7 +71,11 @@ public class TrieTest {
 		Set<String> st = new HashSet<String>(Arrays.asList(toInsert));
 		assertEquals(st.size(),simpleT.getVocabularySize());
 	}
-	
+
+	/**
+	 * Test frequency values of Trie nodes by putting each word of excerpt 
+	 * in hash map with count as its value and comparing to Trie nodes counts
+	 */
 	@Test
 	public void SimpleTestFrequencies(){
 		simpleT.insertAll(Arrays.asList(toInsert));
@@ -76,61 +97,56 @@ public class TrieTest {
 			}
 		} 
 	}
-	
+
 	@Test
 	public void ComplexTestEmpty() {
-		//assertTrue(complexT.isEmpty());
+		assertTrue(complexT.isEmpty());
 		assertEquals(0,complexT.getTotalFreq());
 		assertEquals(0,complexT.getVocabularySize());
 
 	}
-	
-	public int getCountInExcerpt(String s){
-		System.out.println("======="+s);
-		String [] seqArr = s.split("#");
-		int seq = seqArr.length, curr = 0, count = 0;
-		System.out.println("======="+seq);
-		while(curr < toInsert.length - seq){
-			boolean found = true;
-			for(int  i = 0 ; i < seq ; i++){
-				System.out.println(i);
-				System.out.println(seqArr[i]);
-				if(!(toInsert[curr + i].equals(seqArr[i]))){
-					found = false;
-				}
-			}
-			if(found) count ++;
-			curr++;
-		}
-		return count;
-	}
-	
+
+	/**
+	 * Test state of Trie after insertions. Size of Trie should be equal 
+	 * to corpus length Size of vocab size should equal the number of distinct
+	 * words in the Trie. Test frequency of prefix count after insert. 
+	 */
 	@Test
-	public void ComplexTestNonEmpty(){
-		makeTrieSegments();
-		complexT.insertAll(trieSegments);
-		System.out.println(complexT.getTotalFreq());
-		assertFalse(complexT.isEmpty());
-		assertEquals(trieSegments.size(), complexT.getTotalFreq());
-		Set<String> st = new HashSet<String>(Arrays.asList(toInsert));
-		System.out.println("Vocab size is " + complexT.getVocabularySize());
+	public void ComplexTestInsert(){
+		List<String> seg = makeTrieSegments();
+		complexT.insertAll(seg);
 		String sub1 = "Gallop#apace,#";
 		String sub2 = "Gallop#";
+		String sub3 = "Gallap#apace#";
+		String sub4 = "apace,#";
+		assertFalse(complexT.isEmpty());
+		assertEquals(seg.size(), complexT.getTotalFreq());
 		int count = complexT.stringFreq(sub1);
 		assertEquals(count, getCountInExcerpt(sub1));
 		assertEquals(complexT.stringFreq(sub2), getCountInExcerpt(sub2));
+		assertEquals(complexT.stringFreq(sub3), getCountInExcerpt(sub3));
+		assertEquals(complexT.stringFreq(sub4), getCountInExcerpt(sub4));
 	}
-	
+
+	/**
+	 * Tests number of children for each prefix
+	 * including root node
+	 */
 	@Test
 	public void ComplexTestChildren(){
-		makeTrieSegments();
-		complexT.insertAll(trieSegments);
-		TrieNode tn1 = complexT.getRoot();
-		Collection<TrieNode> children1 = (Collection<TrieNode>) tn1.getChildren();
-		assertEquals(children1.size(), 6);
-		TrieNode tn2 = complexT.get("Gallop#apace,#");
-		Collection<TrieNode> children2 = (Collection<TrieNode>) tn2.getChildren();
-		assertEquals(children2.size(), 4);
+		List<String> seg = makeTrieSegments();
+		complexT.insertAll(seg);
+		String [] keys = {"Gallop#apace,#","Gallop#","Gallop#you#","Gallop#apace,#you#",
+				"apace,#", "you#Gallop#"};
+		int [] childCount = {4,2,1,0,4,1};
+		for(int i = 0 ; i < keys.length; i++){
+			TrieNode tn = complexT.get(keys[i]);
+			Collection<TrieNode> children = (Collection<TrieNode>) tn.getChildren();
+			assertEquals(children.size(), childCount[i]);
+		}
+		TrieNode root = complexT.getRoot();
+		Collection<TrieNode> rootChildren = (Collection<TrieNode>) root.getChildren();
+		assertEquals(rootChildren.size(), 6);
 		assertEquals(complexT.stringFreq(""),0);
 	}
 }

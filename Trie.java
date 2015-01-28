@@ -10,13 +10,12 @@ import java.util.Map;
 import java.util.Random;
 
 /**
- * Purpose: Trie interface that stores all
- * the data for an ngram
+ * Trie --- Trie data structure to keep track of NGrams model
  * @author Sarah Lee
  */
 public class Trie {
-	private TrieNode root; //root of the trie
-	private int totalFreq;  //represents the size of the corpus this trie holds
+	private TrieNode root; //root of the Trie
+	private int totalFreq;  //represents the size of the corpus this Trie holds
 
 	//constructor
 	public Trie(){
@@ -33,6 +32,11 @@ public class Trie {
 		return root;
 	}
 
+	/**
+	 * Inserts a given word
+	 * @param String s to add to Trie
+	 * @return none
+	 */
 	public void insert(String s){
 		root.insert(s);
 		totalFreq ++;
@@ -40,8 +44,8 @@ public class Trie {
 
 	/**
 	 * Inserts a list of words 
-	 * @param string s to add to trie
-	 * @return TrieNode containing the string
+	 * @param Collection of words to add to Trie
+	 * @return none
 	 */
 	public void insertAll(Collection<String> toInsert){
 		Iterator<String> it = toInsert.iterator();
@@ -53,13 +57,12 @@ public class Trie {
 	}
 
 	public boolean isEmpty(){
-		System.out.println("total freq is " + totalFreq);
 		return (totalFreq == 0);
 	}
 
 	/**
-	 * Finds the node in the trie containing 
-	 * @param string s to locate in trie
+	 * Finds the node in the Trie containing 
+	 * @param string s to locate in Trie
 	 * @return TrieNode containing the string
 	 */
 	public TrieNode get(String s){
@@ -71,8 +74,7 @@ public class Trie {
 	}
 
 	/**
-	 * Pre-order trie traversal
-	 * @param none
+	 * Pre-order Trie traversal
 	 * @return none
 	 */
 	public void traverse(){
@@ -80,22 +82,23 @@ public class Trie {
 	}
 
 	/**
-	 * Calculates the total time a string occurs
+	 * Calculates the total times a string occurs
 	 * @param string s to find the frequency for
-	 * @return int frequency of given string
+	 * @return frequency of given string as int
 	 */
 	public int stringFreq(String s){
 		TrieNode t = get(s);
 		if(t != null) return t.getFreq();
 		return 0;
 	}
+	
 	/**
-	 * Populates a good Turing map for the trie
-	 * @param map to populate good turing counts
+	 * Populates a good Turing map for the Trie
+	 * @param map to populate Good-Turing counts
 	 * @return none
 	 */
-	public void getTuringCounts(Map<Integer, Integer> map){
-		root.getTuringCounts(map);
+	public void applyTuringCounts(Map<Integer, Integer> map){
+		root.applyTuringCounts(map);
 	}
 
 	/**
@@ -117,8 +120,8 @@ public class Trie {
 	}
 
 	/**
-	 * Iteratively calculates number of nodes in the trie
-	 * @return total number of nodes in the trie
+	 * Iteratively calculates number of nodes in the Trie
+	 * @return total number of nodes in the Trie
 	 */
 	public int getVocabularySize(){
 		int size = 0;

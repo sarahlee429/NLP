@@ -6,10 +6,9 @@ import java.util.Iterator;
 import java.util.Map;
 
 /**
- * Purpose: TrieNode class to maintain keys and frequencies
+ * TrieNode --- Maintains TrieNode used to construct and maintain a Trie
  * @author Sarah Lee
  */
-
 public class TrieNode{
 	private static final String WORD_MARKER = "#"; //used to mark the end of a word
 	private boolean isWord; //marks the end of a word
@@ -89,7 +88,7 @@ public class TrieNode{
 	
 	/**
 	 * Searches if s is contained in this node or descendants
-	 * @param string s to locate in trie
+	 * @param string s to locate in Trie
 	 * @return true found or false if none found
 	 */
 	public boolean contains(String query){
@@ -98,7 +97,7 @@ public class TrieNode{
 	
 	/**
 	 * Finds the child that contains s
-	 * @param string s to locate in trie
+	 * @param string s to locate in Trie
 	 * @return TrieNode containing the string
 	 */
 	public TrieNode get(String s){
@@ -117,20 +116,21 @@ public class TrieNode{
 	 * @param a map passed by ref to update
 	 * @return none
 	 */
-	public void getTuringCounts(Map<Integer,Integer> map){
+	public void applyTuringCounts(Map<Integer,Integer> map){
 		if(!key.equals("")){
 			//map contains this node's freq as key
 			if(map.containsKey(getFreq())){
 				Integer val = map.get(getFreq());
 				//increment value for key
 				map.put(getFreq(), val + 1);
+			
 			} else {
 				//otherwise insert with init value of 1
 				map.put(getFreq(), 1);
 			}
 		}
 		for(TrieNode n: children.values()){
-			n.getTuringCounts(map);
+			n.applyTuringCounts(map);
 		}
 	}
 
@@ -157,7 +157,7 @@ public class TrieNode{
 		if(children == null) return null;
 		Iterator<String> it = children.keySet().iterator();
 		while(it.hasNext()){
-			TrieNode t= children.get(it.next());
+			TrieNode t = children.get(it.next());
 			curr = curr + t.getFreq();
 			if(curr >= r) return t.getKey();
 		}
@@ -171,7 +171,7 @@ public class TrieNode{
 	 * @return none
 	 */
 	public void print(Writer out, String keys) throws IOException{
-		if(children!=null){
+		if(children != null){
 			Iterator<String> it = children.keySet().iterator();
 			while(it.hasNext()) {
 				TrieNode child = children.get(it.next());

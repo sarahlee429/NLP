@@ -1,14 +1,17 @@
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
-
 import javax.swing.JFileChooser;
+
+/**
+ * Tokenizer --- A class that parses and formats a given corpus
+ * @author Sarah Lee
+ */
 public class Tokenizer {
-	public ArrayList<String> tokens;
-	private static final String regexPunc = "([\\(),\";:/\\|`])";  
+	private List<String> tokens;
+	private static final String regexPunc = "([\\?!(),\";:/\\|`])";  
 	private static final String regexTags = "<[^>]*>";
 	private static final String regexNum = "[0-9]";
 	private static final String regexBreak = "[\\t\\n\\r\\d]";
@@ -16,11 +19,14 @@ public class Tokenizer {
 
 	/**
 	 * Brings up chooser for user to select a file
-	 * 
 	 * @return Scanner for user selected file, null if file not found
 	 */
 	public Tokenizer(){
 		tokens = new ArrayList<String>();
+	}
+	
+	public List<String> getTokens(){
+		return tokens;
 	}
 
 	public static Scanner getScanner() { 

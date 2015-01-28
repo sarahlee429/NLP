@@ -2,20 +2,21 @@ import java.util.Map;
 import java.util.TreeMap;
 
 /**
- * Unigrams --- Implements unigrams language model
+ * Bigrams --- Implements bigrams language model
  * @author Sarah Lee
  */
-public class Unigrams implements INgrams{
-	private static final int SENTENCE_MAX = 150;
+public class Bigrams implements INgrams{
+	private static final int SENTENCE_MAX = 100;
+	static private final String WORD_MARKER = "#";
 	private Trie t;
 	private Map <Integer,Integer> turingMap;
 	
 	/**
-	 * Constructor for the Unigram
-	 * @param a Trie containing Unigram data
-	 * @return a pointer to new Unigram object
+	 * Constructor for the Bigrams
+	 * @param a Trie containing Bigrams data
+	 * @return a pointer to new Bigrams object
 	 */
-	public Unigrams(Trie t){
+	public Bigrams(Trie t){
 		this.t = t;
 		turingMap = new TreeMap<Integer, Integer>();
 	}
@@ -28,7 +29,7 @@ public class Unigrams implements INgrams{
 	public void setTrie(Trie t){
 		this.t = t;
 	}
-	
+
 	public Map<Integer,Integer> getTuringMap(){
 		return this.turingMap;
 	}
@@ -42,23 +43,26 @@ public class Unigrams implements INgrams{
 			System.out.println("Key: " + i +","+ "Value: " + turingMap.get(i));
 		}
 	}
-
+	
+	//Note the probabilities of bigrams is conditional
+	//on the probability of preceding string
+	//p = count(w1,w2)/count(w1)
 	public double addOneSmoothedProbability(String s){
+		String [] split = s.split(WORD_MARKER);
+		assert(split.length == 2);
 		int count = t.stringFreq(s);
-		System.out.println("the count is " + count);
-		System.out.println("t size is " + t.getTotalFreq());
 		if (count > 0) {
-			return (count + 1) / (t.getTotalFreq() + (t.getVocabularySize()));
+			return (count + 1) / (t.stringFreq(split[0]) + (t.getVocabularySize()));
 		}
 		return 0.0;
 	}
 
 	public double unsmoothedProbability(String s){
 		int count = t.stringFreq(s);
-		System.out.println("the coutn is " + count);
-		System.out.println("t size is " + t.getTotalFreq());
+		String [] split = s.split(WORD_MARKER);
+		assert(split.length == 2);
 		if (count > 0) {
-			return count / t.getTotalFreq();
+			return count / t.stringFreq(split[0]);
 		}
 		return 0.0;
 	}
@@ -74,7 +78,7 @@ public class Unigrams implements INgrams{
 		while(!s2.contains(".") && sentence.length() <= SENTENCE_MAX){
 			s2 = t.generateWord(s1);
 			sentence.append(s2 + " ");
-			s1 = "";
+			s1 = s2;
 		}
 		//capitalizes the first character of the sentence
 		String ret = Character.toString(sentence.toString().charAt(0)).toUpperCase() + 
@@ -85,7 +89,7 @@ public class Unigrams implements INgrams{
 		}
 		return ret;
 	}
-	
+
 	public void print(String filename){
 		t.print(filename);
 	}
